@@ -20,8 +20,9 @@ class EmpAdapter() :
                 textViewName.text = String.format("%s %s", emp.name.first, emp.name.last)
                 textViewEmail.text = emp.email
                 textViewDepartment.text = emp.department
-                textViewPhone.text = emp.phones[0].number
-                textViewJoinDate.text = emp.hiredOn.convertUTCDate()
+                textViewPhone.text =
+                    String.format("%s . %s", emp.phones[0].type, emp.phones[0].number)
+                textViewJoinDate.text = emp.hiredOn.convertUTCDate("MM-yyyy")
             }
         }
     }

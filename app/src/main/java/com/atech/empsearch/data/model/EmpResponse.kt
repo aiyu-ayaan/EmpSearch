@@ -1,9 +1,11 @@
 package com.atech.empsearch.data.model
 
+import androidx.annotation.Keep
 import androidx.recyclerview.widget.DiffUtil
 
 
 
+@Keep
 data class EmpResponseItem(
     val address: Address,
     val department: String,
@@ -22,6 +24,7 @@ data class EmpResponseItem(
     val username: String
 )
 
+@Keep
 data class Address(
     val city: String,
     val state: String,
@@ -29,11 +32,13 @@ data class Address(
     val zip: String
 )
 
+@Keep
 data class Name(
     val first: String,
     val last: String
 )
 
+@Keep
 data class Phone(
     val number: String,
     val type: String
