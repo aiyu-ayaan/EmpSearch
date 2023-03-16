@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EmpSearch</string>
+    <string name="searchbar_hint">Search For Emp</string>
+    <string name="all_employee">All Employee</string>
 </resources>
