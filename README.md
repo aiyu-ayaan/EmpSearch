@@ -7,7 +7,7 @@ The Emp Search app is a simple Android app that allows you to search for employe
 ## Features
 
 - Search for employees by name or job title
-- View employee details, including name, job title, email, phone number, and profile picture
+- View employee details, including name, job title, email, phone number, and more.
 - Lazy loading of employee data using Kotlin Streams API
 
 ## Getting Started
@@ -49,4 +49,4 @@ The app uses the following libraries:
 
 ## Credits
 
-The employee data used in this app is taken from [Dummy JSON](https://aiyu-ayaan.github.io/Dummy-JSON/), a tool for generating realistic test data in JSON format.
+The employee data used in this app is taken from [Dummy JSON](https://aiyu-ayaan.github.io/Dummy-JSON/) & [GITHUB REPO](https://github.com/aiyu-ayaan/Dummy-JSON), a realistic employees test data in JSON format.
