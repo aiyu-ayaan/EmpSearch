@@ -2,7 +2,7 @@ package com.atech.empsearch.data.model
 
 import androidx.annotation.Keep
 import androidx.recyclerview.widget.DiffUtil
-
+import com.atech.empsearch.util.convertUTCDate
 
 
 @Keep
@@ -22,7 +22,22 @@ data class EmpResponseItem(
     val terminatedOn: String,
     val thumbnail: String,
     val username: String
-)
+) {
+    val fullName: String
+        get() = "${name.first} ${name.last}"
+
+    val fullAddress: String
+        get() = "${address.street}, ${address.city}, ${address.state}, ${address.zip}"
+
+    val fullPhone: String
+        get() = phones.joinToString(", ") { it.number }
+
+    val hiredOnDate: String
+        get() = hiredOn.convertUTCDate("mm-yyyy")
+
+    val dobDate: String
+        get() = dob.convertUTCDate("dd-mm-yyyy")
+}
 
 @Keep
 data class Address(
@@ -44,7 +59,7 @@ data class Phone(
     val type: String
 )
 
-class DiffUtilEmpResponseItem : DiffUtil.ItemCallback<EmpResponseItem>(){
+class DiffUtilEmpResponseItem : DiffUtil.ItemCallback<EmpResponseItem>() {
     override fun areItemsTheSame(oldItem: EmpResponseItem, newItem: EmpResponseItem): Boolean =
         oldItem == newItem
 

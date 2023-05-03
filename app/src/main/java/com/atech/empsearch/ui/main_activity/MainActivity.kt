@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.viewbinding.library.activity.viewBinding
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atech.empsearch.databinding.ActivityMainBinding
 import com.atech.empsearch.ui.fragment.home.adapter.EmpAdapter
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private fun observeData() {
         viewModel.searchResult.observe(this) {
             empAdapter.submitList(it)
+            noData(it.isEmpty())
         }
     }
 
@@ -39,6 +41,12 @@ class MainActivity : AppCompatActivity() {
             adapter = EmpAdapter().also { empAdapter = it }
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
+    }
+
+    private fun noData(isTrue: Boolean) {
+        binding.imageNoData.isVisible = isTrue
+        binding.textNoData.isVisible = isTrue
+        binding.recyclerViewSearch.isVisible = !isTrue
     }
 
     private fun setSearchView() {

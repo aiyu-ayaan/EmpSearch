@@ -3,4 +3,5 @@
     <string name="searchbar_hint">Search For Emp</string>
     <string name="all_employee">All Employee</string>
     <string name="department">Department</string>
+    <string name="no_data">No Data</string>
 </resources>

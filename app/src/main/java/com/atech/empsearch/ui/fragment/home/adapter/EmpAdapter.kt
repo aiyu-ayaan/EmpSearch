@@ -23,6 +23,9 @@ class EmpAdapter() :
                 textViewPhone.text =
                     String.format("%s . %s", emp.phones[0].type, emp.phones[0].number)
                 textViewJoinDate.text = emp.hiredOn.convertUTCDate("MM-yyyy")
+                textViewSsn.text = String.format("SSN : %s",emp.ssn)
+                textViewGender.text = emp.gender
+                textViewAddress.text = emp.fullAddress
             }
         }
     }

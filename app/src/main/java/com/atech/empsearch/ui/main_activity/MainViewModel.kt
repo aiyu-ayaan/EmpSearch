@@ -32,25 +32,64 @@ class MainViewModel @Inject constructor(
             query.collectLatest { query ->
                 val filterData = repository.getEmpData(query, filter = { q, h ->
                     val filterList = mutableListOf<EmpResponseItem>()
-                    h.filter { it.username.contains(q, true) }
-                        .toCollection(filterList)
-                    h.filter { it.email.contains(q, true) }
-                        .let {
-                            it.filter { email ->
-                                !filterList.any { it.email == email.email }
-                            }.toCollection(filterList)
-                        }
-                    h.filter { it.ssn.contains(q, true) }
-                        .let {
-                            it.filter { ssn ->
-                                !filterList.any { it.ssn == ssn.ssn }
-                            }.toCollection(filterList)
-                        }
+                    if(query.contains("d:"))
+                        h.filter { it.department.contains(q.replace("d:",""), true) }
+                            .toCollection(filterList)
+                    if(query.contains("email:"))
+                        h.filter { it.email.contains(q.replace("email:",""), true) }
+                            .toCollection(filterList)
+                    if(query.contains("ssn:"))
+                        h.filter { it.ssn.contains(q.replace("ssn:",""), true) }
+                            .toCollection(filterList)
+                    if(query.contains("name:"))
+                        h.filter { it.fullName.contains(q.replace("name:",""), true) }
+                            .toCollection(filterList)
+                    if(query.contains("address:"))
+                        h.filter { it.fullAddress.contains(q.replace("address:",""), true) }
+                            .toCollection(filterList)
+                    if(query.contains("phone:"))
+                        h.filter { it.fullPhone.contains(q.replace("phone:",""), true) }
+                            .toCollection(filterList)
+                    else {
+                        h.filter { it.username.contains(q, true) }
+                            .toCollection(filterList)
+                        h.filter { it.email.contains(q, true) }
+                            .let {
+                                it.filter { email ->
+                                    !filterList.any { it.email == email.email }
+                                }.toCollection(filterList)
+                            }
+                        h.filter { it.ssn.contains(q, true) }
+                            .let {
+                                it.filter { ssn ->
+                                    !filterList.any { it.ssn == ssn.ssn }
+                                }.toCollection(filterList)
+                            }
+                        h.filter { it.fullName.contains(q, true) }
+                            .let {
+                                it.filter { first ->
+                                    !filterList.any { it.fullName == first.fullName }
+                                }.toCollection(filterList)
+                            }
+                        h.filter { it.fullAddress.contains(q, true) }
+                            .let {
+                                it.filter { address ->
+                                    !filterList.any { it.fullAddress == address.fullAddress }
+                                }.toCollection(filterList)
+                            }
+                        h.filter { it.fullPhone.contains(q, true) }
+                            .let {
+                                it.filter { phone ->
+                                    !filterList.any { it.fullPhone == phone.fullPhone }
+                                }.toCollection(filterList)
+                            }
+                    }
                     filterList
                 }).map { dataState ->
                     when (dataState) {
                         is DataState.Success ->
                             dataState.data
+
                         else ->
                             emptyList()
                     }
