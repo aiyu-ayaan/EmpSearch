@@ -4,4 +4,11 @@
     <string name="all_employee">All Employee</string>
     <string name="department">Department</string>
     <string name="no_data">No Data</string>
+    <string name="all">All</string>
+    <string name="email">Email</string>
+    <string name="ssn">SSN</string>
+    <string name="name">Name</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="Dep">Dep.</string>
 </resources>

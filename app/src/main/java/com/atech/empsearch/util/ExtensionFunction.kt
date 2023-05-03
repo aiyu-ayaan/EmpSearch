@@ -1,6 +1,9 @@
 package com.atech.empsearch.util
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,18 +19,16 @@ import java.util.Date
 
 @SuppressLint("SimpleDateFormat")
 fun String.convertUTCDate(
-    format : String = "yyyy-MM-dd"
-) : String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val dateFormat =DateTimeFormatter.ofPattern(format)
-        val dateTime = Instant.parse(this)
-            .atZone(ZoneId.of("UTC"))
-            .toLocalDate()
-         dateTime.format(dateFormat)
-    } else {
-        val dateFormat = SimpleDateFormat(format)
-        val dateTime = Date(this)
-        dateFormat.format(dateTime)
-    }
+    format: String = "yyyy-MM-dd"
+): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    val dateFormat = DateTimeFormatter.ofPattern(format)
+    val dateTime = Instant.parse(this).atZone(ZoneId.of("UTC")).toLocalDate()
+    dateTime.format(dateFormat)
+} else {
+    val dateFormat = SimpleDateFormat(format)
+    val dateTime = Date(this)
+    dateFormat.format(dateTime)
+}
 
 
 inline fun <ResponseObject> networkFetchData(
@@ -65,4 +66,22 @@ inline fun EditText.addTextChangeListener(
             }
         }
     })
+}
+
+
+fun Context.openMail(mail: String) {
+    val intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = Uri.parse("mailto:")
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(mail)) // Set the recipient email address(es)
+        putExtra(Intent.EXTRA_SUBJECT, "") // Set the email subject
+        putExtra(Intent.EXTRA_TEXT, "") // Set the email body
+    }
+    startActivity(intent)
+}
+
+fun Context.openDialer(phone: String) {
+    val intent = Intent(Intent.ACTION_DIAL).apply {
+        data = Uri.parse("tel:${phone.replace("-", "")}")
+    }
+    startActivity(intent)
 }

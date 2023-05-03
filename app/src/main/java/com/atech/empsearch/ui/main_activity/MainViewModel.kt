@@ -1,5 +1,6 @@
 package com.atech.empsearch.ui.main_activity
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.atech.empsearch.data.EmployeeRepository
 import com.atech.empsearch.data.model.EmpResponseItem
 import com.atech.empsearch.util.DataState
+import com.atech.empsearch.util.QueryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -30,25 +32,26 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             query.collectLatest { query ->
+                Log.d("AAA", query)
                 val filterData = repository.getEmpData(query, filter = { q, h ->
                     val filterList = mutableListOf<EmpResponseItem>()
-                    if(query.contains("d:"))
-                        h.filter { it.department.contains(q.replace("d:",""), true) }
+                    if (query.contains(QueryType.DEP.value))
+                        h.filter { it.department.contains(q.replace(QueryType.DEP.value, ""), true) }
                             .toCollection(filterList)
-                    if(query.contains("email:"))
-                        h.filter { it.email.contains(q.replace("email:",""), true) }
+                    if (query.contains(QueryType.EMAIL.value))
+                        h.filter { it.email.contains(q.replace(QueryType.EMAIL.value, ""), true) }
                             .toCollection(filterList)
-                    if(query.contains("ssn:"))
-                        h.filter { it.ssn.contains(q.replace("ssn:",""), true) }
+                    if (query.contains(QueryType.SSN.value))
+                        h.filter { it.ssn.contains(q.replace(QueryType.SSN.value, ""), true) }
                             .toCollection(filterList)
-                    if(query.contains("name:"))
-                        h.filter { it.fullName.contains(q.replace("name:",""), true) }
+                    if (query.contains(QueryType.NAME.value))
+                        h.filter { it.fullName.contains(q.replace(QueryType.NAME.value, ""), true) }
                             .toCollection(filterList)
-                    if(query.contains("address:"))
-                        h.filter { it.fullAddress.contains(q.replace("address:",""), true) }
+                    if (query.contains(QueryType.ADDRESS.value))
+                        h.filter { it.fullAddress.contains(q.replace(QueryType.ADDRESS.value, ""), true) }
                             .toCollection(filterList)
-                    if(query.contains("phone:"))
-                        h.filter { it.fullPhone.contains(q.replace("phone:",""), true) }
+                    if (query.contains(QueryType.PHONE.value))
+                        h.filter { it.fullPhone.contains(q.replace(QueryType.PHONE.value, ""), true) }
                             .toCollection(filterList)
                     else {
                         h.filter { it.username.contains(q, true) }
