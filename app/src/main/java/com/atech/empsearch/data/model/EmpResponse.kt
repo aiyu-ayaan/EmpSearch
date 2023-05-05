@@ -3,6 +3,7 @@ package com.atech.empsearch.data.model
 import androidx.annotation.Keep
 import androidx.recyclerview.widget.DiffUtil
 import com.atech.empsearch.util.convertUTCDate
+import com.atech.empsearch.util.getShortForm
 
 
 @Keep
@@ -24,19 +25,23 @@ data class EmpResponseItem(
     val username: String
 ) {
     val fullName: String
-        get() = "${name.first} ${name.last}"
+        get() = "${name.first} ${name.last}".trim()
 
     val fullAddress: String
-        get() = "${address.street}, ${address.city}, ${address.state}, ${address.zip}"
+        get() = "${address.street}${if (address.street.isNotBlank()) "," else ""} ${address.city}${if (address.city.isNotBlank()) "," else ""}" +
+                " ${address.state}${if (address.state.isNotBlank()) "," else ""} ${address.zip}".trim()
 
     val fullPhone: String
-        get() = phones.joinToString(", ") { it.number }
+        get() = phones.joinToString(", ") { it.number }.trim()
 
     val hiredOnDate: String
         get() = hiredOn.convertUTCDate("mm-yyyy")
 
     val dobDate: String
         get() = dob.convertUTCDate("dd-mm-yyyy")
+
+    val shortDepartment: String
+        get() = department.getShortForm()
 }
 
 @Keep

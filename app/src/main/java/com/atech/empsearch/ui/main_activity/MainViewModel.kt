@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     val empData = repository.getEmpData()
 
-    val query = MutableStateFlow("")
+    val query = MutableStateFlow(QueryType.ALL.value)
 
     private val _searchResult: MutableLiveData<List<EmpResponseItem>> = MutableLiveData()
 
@@ -32,12 +32,26 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             query.collectLatest { query ->
-                Log.d("AAA", query)
                 val filterData = repository.getEmpData(query, filter = { q, h ->
                     val filterList = mutableListOf<EmpResponseItem>()
-                    if (query.contains(QueryType.DEP.value))
-                        h.filter { it.department.contains(q.replace(QueryType.DEP.value, ""), true) }
-                            .toCollection(filterList)
+                    if (query.contains(QueryType.DEP.value)) {
+                        h.filter {
+                            it.department.contains(
+                                q.replace(QueryType.DEP.value, ""),
+                                true
+                            )
+                        }.toCollection(filterList)
+
+                        h.filter {
+                            it.shortDepartment.contains(
+                                q.replace(QueryType.DEP.value, ""),
+                                true
+                            )
+                        }.let {
+                            it.filter { item -> !filterList.contains(item) }
+                                .toCollection(filterList)
+                        }
+                    }
                     if (query.contains(QueryType.EMAIL.value))
                         h.filter { it.email.contains(q.replace(QueryType.EMAIL.value, ""), true) }
                             .toCollection(filterList)
@@ -48,10 +62,20 @@ class MainViewModel @Inject constructor(
                         h.filter { it.fullName.contains(q.replace(QueryType.NAME.value, ""), true) }
                             .toCollection(filterList)
                     if (query.contains(QueryType.ADDRESS.value))
-                        h.filter { it.fullAddress.contains(q.replace(QueryType.ADDRESS.value, ""), true) }
+                        h.filter {
+                            it.fullAddress.contains(
+                                q.replace(QueryType.ADDRESS.value, ""),
+                                true
+                            )
+                        }
                             .toCollection(filterList)
                     if (query.contains(QueryType.PHONE.value))
-                        h.filter { it.fullPhone.contains(q.replace(QueryType.PHONE.value, ""), true) }
+                        h.filter {
+                            it.fullPhone.contains(
+                                q.replace(QueryType.PHONE.value, ""),
+                                true
+                            )
+                        }
                             .toCollection(filterList)
                     else {
                         h.filter { it.username.contains(q, true) }
@@ -68,7 +92,9 @@ class MainViewModel @Inject constructor(
                                     !filterList.any { it.ssn == ssn.ssn }
                                 }.toCollection(filterList)
                             }
-                        h.filter { it.fullName.contains(q, true) }
+                        h.filter {
+                            it.fullName.contains(q, true)
+                        }
                             .let {
                                 it.filter { first ->
                                     !filterList.any { it.fullName == first.fullName }
@@ -84,6 +110,12 @@ class MainViewModel @Inject constructor(
                             .let {
                                 it.filter { phone ->
                                     !filterList.any { it.fullPhone == phone.fullPhone }
+                                }.toCollection(filterList)
+                            }
+                        h.filter { it.shortDepartment.contains(q, true) }
+                            .let {
+                                it.filter { dep ->
+                                    !filterList.any { it.shortDepartment == dep.shortDepartment }
                                 }.toCollection(filterList)
                             }
                     }

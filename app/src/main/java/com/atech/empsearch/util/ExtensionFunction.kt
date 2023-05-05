@@ -85,3 +85,17 @@ fun Context.openDialer(phone: String) {
     }
     startActivity(intent)
 }
+
+fun String.getShortForm(): String {
+    val split = this.split(" ")
+    return if (split.size > 1) {
+        try {
+            split.map { it[0] }
+                .joinToString("")
+        } catch (e: Exception) {
+            this
+        }
+    } else {
+        this
+    }
+}

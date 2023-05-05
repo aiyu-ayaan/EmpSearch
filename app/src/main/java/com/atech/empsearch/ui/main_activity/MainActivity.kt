@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.viewbinding.library.activity.viewBinding
+import androidx.activity.addCallback
 import androidx.activity.viewModels
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atech.empsearch.R
 import com.atech.empsearch.databinding.ActivityMainBinding
@@ -18,6 +22,7 @@ import com.atech.empsearch.util.addTextChangeListener
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.search.SearchView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -37,6 +42,13 @@ class MainActivity : AppCompatActivity() {
             searchBarState()
         }
         observeData()
+        onBackPressedDispatcher.addCallback {
+            if (binding.searchView.isShowing) {
+                binding.searchView.hide()
+            } else {
+                finish()
+            }
+        }
     }
 
     private fun searchBarState() {
@@ -92,26 +104,45 @@ class MainActivity : AppCompatActivity() {
                 QueryType.ALL.value
             }
         }
+        lifecycleScope.launchWhenStarted {
+            viewModel.query.collectLatest {
+                when (it) {
+                    QueryType.ADDRESS.value -> binding.setChipSelected(R.id.chipAddress)
+                    QueryType.DEP.value -> binding.setChipSelected(R.id.chipDep)
+                    QueryType.EMAIL.value -> binding.setChipSelected(R.id.chipEmail)
+                    QueryType.NAME.value -> binding.setChipSelected(R.id.chipName)
+                    QueryType.PHONE.value -> binding.setChipSelected(R.id.chipPhone)
+                    QueryType.SSN.value -> binding.setChipSelected(R.id.chipSsn)
+                    QueryType.ALL.value -> binding.setChipSelected(R.id.chipAll)
+                }
+            }
+        }
     }
 
     private fun setSearchEditTextValue(value: String) = binding.searchView.editText.apply {
-        setText("")
         val spannableString = SpannableString(value)
         spannableString.setSpan(
             ForegroundColorSpan(
                 MaterialColors.getColor(
-                    this,
-                    androidx.appcompat.R.attr.colorPrimary,
-                    Color.CYAN
+                    this, androidx.appcompat.R.attr.colorPrimary, Color.CYAN
                 )
-            ),
-            0,
-            value.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            ), 0, value.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         setText(spannableString)
         setSelection(binding.searchView.editText.text.length)
     }
 
-
+    private fun ActivityMainBinding.setChipSelected(@IdRes id: Int) = this.searchBarLayout.apply {
+        listOf(
+            chipAddress,
+            chipDep,
+            chipEmail,
+            chipName,
+            chipPhone,
+            chipSsn,
+            chipAll
+        ).associateWith { it.id }.forEach { (button, buttonId) ->
+            button.isChecked = buttonId == id
+        }
+    }
 }
